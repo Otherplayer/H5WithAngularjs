@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html ng-app="documentdeal">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="BIM,BOT,BIMBOT,HNA" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>待签批公文</title>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="icon" type="image/x-icon" href="../../../assets/images/favicon.ico?v=0.1.0"/>
+
+    <!-- 引入 Bootstrap -->
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 AngularJS -->
+    <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+
+    <!-- HTML5 Shim 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+    <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="document-deal.controller.js"></script>
+    <script src="../common/ui-utils.js"></script>
+    <script src="../common/smart-table.min.js"></script>
+    <link rel="stylesheet" href="../common/app.css" type="text/css" />
+</head>
+<!--<script>-->
+<!--jQuery(function($){-->
+<!--$('.table').footable();-->
+<!--});-->
+<!--</script>-->
+
+
+<body ng-controller="documentDealController">
+
+<div class="col-sm-12 col-xs-12">
+    <div style="height: 20px" class="col-sm-12 col-xs-12 col-md-12"></div>
+    <div class="m-t-sm">
+        <label class="col-sm-7 col-xs-7 col-md-7 control-label text-left"><span class="text-muted m-r-lg">标题</span></label>
+        <span class="col-sm-5 col-xs-5 col-md-5 control-label text-right pull-right">呈 报 人</span>
+    </div>
+    <div style="height: 5px" class="col-sm-12 col-xs-12 col-md-12"></div>
+</div>
+<div class="col-sm-12 col-xs-12">
+
+    <div class="panel panel-default" style="border-radius: 5px;" ng-repeat="item in viewOption">
+        <!--<div class="panel-heading col-sm-12 col-xs-12" style="background-color: #429cf2;">-->
+            <!--<label class="col-sm-12 col-xs-12 control-label text-left text-lg m-t-sm m-l-n text-white">关于技术研究院XXX出差申请</label>-->
+        <!--</div>-->
+        <div class="panel-heading m-n col-xs-12" style="background-color: #429cf2;">
+            <label class="control-label text-lg text-white text-left col-xs-8 m-l-n">{{"关于技术研究院XXX出差申请"}}</label>
+            <span class="col-xs-4 m-r-n text-right text-lg text-white pull-right">{{"郭乐乐"}}</span>
+        </div>
+        <div class="panel-body" style="background-color: #fff;">
+            <!--机票-->
+            <form name="formAirTransport" class="form-horizontal form-validation m-t-lg" >
+                <div class="form-group" ng-click="showDetail( $index )">
+                    <label class="col-sm-4 col-xs-4 col-md-2 control-label text-left text-muted">公文类型</label>
+                    <div class="col-sm-8 col-xs-8 col-md-10 m-l-n">
+                        <label class="control-label">{{"dsaffsad"}}</label>
+                    </div>
+                </div>
+                <div class="form-group" ng-click="showDetail($index)">
+                    <label class="col-sm-4 col-xs-4 col-md-2 control-label text-left text-muted">呈报时间</label>
+                    <div class="col-sm-8 col-xs-8 col-md-10 m-l-n">
+                        <label class="control-label">{{"dsaffsad"}}</label>
+                    </div>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<label class="col-sm-12 col-xs-12 col-md-12 control-label text-left text-muted"><span class="m-r-lg">提交时间</span>2015-2-23 提交时间提交时间提交时间提交时间15:65</label>-->
+                    <!--<label class="col-sm-12 col-xs-12 col-md-12 control-label text-left text-muted"><span class="m-r-lg">截止时间</span>2015-2-23 15:65</label>-->
+                <!--</div>-->
+                <div class="form-group m-b-sm">
+                    <button type="submit" class="btn btn-default pull-left col-sm-3 col-xs-4 col-md-2 m-l" ng-click="unagreeAction($index)">不同意</button>
+                    <button type="submit" class="btn btn-info pull-right-xs col-sm-3 col-xs-4 col-md-2 m-r" ng-click="agreeAction($index)">同 意</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="height: 30px" class="col-sm-12 col-xs-12 col-md-12"></div>
+</div>
+
+
+
+
+<script>
+
+    function showDetail(item) {
+        if (JSObjectBridge.jsOpenNewpage){
+            JSObjectBridge.jsOpenNewpage(JSON.stringify(item));
+        }else{
+            window.open("../business-document/business-document.html",'','width=600,height=1000,location=no');
+        }
+    }
+    function shouldBack(count) {
+        if (0 == count && JSObjectBridge.jsBack){
+            JSObjectBridge.jsBack('处理完毕');
+        }else {
+            alert('处理完毕');
+            window.close();
+        }
+    }
+
+    function JSObjectBridge() {
+        function jsBack(parameters) {}
+        function jsOpenNewpage(parameters) {}
+    }
+</script>
+
+</body>
+
+
+</html>

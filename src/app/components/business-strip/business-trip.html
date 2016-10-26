@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html ng-app="businesstrip">
+<head>
+  <meta charset="utf-8" />
+  <meta name="description" content="BIM,BOT,BIMBOT,HNA" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <title>出差申请</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <link rel="icon" type="image/x-icon" href="../../../assets/images/favicon.ico?v=0.1.0"/>
+
+  <!-- 引入 Bootstrap -->
+  <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <!-- 引入 AngularJS -->
+  <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+
+  <!-- HTML5 Shim 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+  <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+  <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+  <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script src="business-trip.controller.js"></script>
+  <script src="../common/select.js"></script>
+  <link rel="stylesheet" href="../common/select.css" type="text/css" />
+  <link rel="stylesheet" href="../common/app.css" type="text/css" />
+</head>
+<!--<script>-->
+  <!--jQuery(function($){-->
+    <!--$('.table').footable();-->
+  <!--});-->
+<!--</script>-->
+
+
+<body ng-controller="businessTripController">
+<div class="panel m-n no-border">
+  <div class="panel-heading bg-info text-center-xs m-n no-border" style="height: 45px;">
+    <span class="font-bold text-lg text-white" style="height: 45px;">{{title}}</span>
+  </div>
+</div>
+<div class="m-t-sm">
+  <form name="formInfo" class="form-horizontal form-validation bg-white">
+      <div class="panel-body">
+        <div class="form-group">
+          <label class="col-sm-12 col-xs-12 col-md-2 control-label text-left">公文标题</label>
+          <div class="col-sm-12 col-xs-12 col-md-10">
+            <input type="text" class="form-control" placeholder="请输入公文标题" ng-model="gwTitle" required >
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-12 col-xs-12 col-md-2 control-label text-left">出差地点</label>
+          <div class="col-sm-12 col-xs-12 col-md-10">
+            <input type="text" class="form-control" placeholder="您出差到什么地方" ng-model="gwAddress" required >
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-9 col-xs-9 col-md-2 control-label text-left">出差时间</label>
+          <div class="col-xs-6 col-sm-6 col-md-2">
+            <input type="date" class="form-control" style="padding:0;margin:0;text-align:center;" placeholder="出差开始时间" ng-model="gwStartDate" required >
+          </div>
+          <!--          <label class="col-xs-1 col-sm-1 col-md-1 control-label">到</label>-->
+          <div class="col-xs-6 col-sm-6 col-md-2">
+            <input type="date" class="form-control" style="padding:0;margin:0;text-align:center;" placeholder="出差开始时间" ng-model="gwStartDate" required >
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-9 col-xs-9 col-md-2 control-label m-t-sm text-left">是否申请机票</label>
+          <div class="col-sm-3 col-xs-3 col-md-10 m-t-sm">
+            <label class="i-switch i-switch-md bg-success">
+              <input type="checkbox" ng-checked="gwNeedAirTicket" ng-model="gwNeedAirTicket"><i></i>
+            </label>
+          </div>
+        </div>
+        <div class="form-group" ng-hide="!gwNeedAirTicket">
+          <label class="col-sm-9 col-xs-9 col-md-2 control-label m-t-sm text-left">是否订座</label>
+          <div class="col-sm-3 col-xs-3 col-md-10 m-t-sm">
+            <label class="i-switch i-switch-md bg-success">
+              <input type="checkbox" ng-checked="gwNeedAirPoint" ng-model="gwNeedAirPoint">
+              <i></i>
+            </label>
+          </div>
+        </div>
+        <div class="form-group" ng-hide="!gwNeedAirTicket">
+          <label class="col-sm-9 col-xs-9 col-md-2 control-label text-left">航线选择</label>
+          <div class="col-xs-6 col-sm-6 col-md-2">
+            <!--<select class="form-control" ng-model="gwFrom">-->
+              <!--<option ng-repeat="airline in airlinesFrom">{{airline}}</option>-->
+            <!--</select>-->
+            <ui-select ng-model="gwFrom.value">
+              <ui-select-match>
+                <span ng-bind="$select.selected.name"></span>
+              </ui-select-match>
+              <ui-select-choices repeat="item in (airlinesFrom | filter: $select.search) track by item.id">
+                <span ng-bind="item.name"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+          <!--          <label class="col-xs-1 col-sm-1 col-md-1 control-label">到</label>-->
+          <div class="col-xs-6 col-sm-6 col-md-2">
+            <!--<select class="form-control" ng-model="gwTo">-->
+              <!--<option ng-repeat="airline in airlinesTo">{{airline}}</option>-->
+            <!--</select>-->
+            <ui-select ng-model="gwTo.value">
+              <ui-select-match>
+                <span ng-bind="$select.selected.name"></span>
+              </ui-select-match>
+              <ui-select-choices repeat="item in (airlinesTo | filter: $select.search) track by item.id">
+                <span ng-bind="item.name"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="form-group" ng-hide="!gwNeedAirTicket">
+          <label class="col-sm-12 col-xs-12 col-md-2 control-label text-left">承运人</label>
+          <div class="col-sm-12 col-xs-12 col-md-10">
+            <!--<select class="form-control" ng-model="gwAirplane">-->
+              <!--<option ng-repeat="air in airports">{{air}}</option>-->
+            <!--</select>-->
+            <ui-select ng-model="gwAirplane.value">
+              <ui-select-match>
+                <span ng-bind="$select.selected.name"></span>
+              </ui-select-match>
+              <ui-select-choices repeat="item in (airports | filter: $select.search) track by item.id">
+                <span ng-bind="item.name"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="form-group" ng-hide="!gwNeedAirPoint || !gwNeedAirTicket">
+          <label class="col-sm-12 col-xs-12 col-md-2 control-label text-left">航班日期</label>
+          <div class="col-sm-12 col-xs-12 col-md-10">
+            <input type="date" class="form-control" style="padding:0;margin:0;text-align:center;" placeholder="请选择日期" ng-model="gwStartDate" >
+          </div>
+        </div>
+        <div class="form-group" ng-hide="!gwNeedAirPoint || !gwNeedAirTicket">
+          <label class="col-sm-12 col-xs-12 col-md-2 control-label text-left">航班号</label>
+          <div class="col-sm-12 col-xs-12 col-md-10">
+            <!--<select class="form-control" ng-model="airportNum">-->
+              <!--<option ng-repeat="air in airportNums">{{air}}</option>-->
+            <!--</select>-->
+            <ui-select ng-model="airportNum.value">
+              <ui-select-match>
+                <span ng-bind="$select.selected.name"></span>
+              </ui-select-match>
+              <ui-select-choices repeat="item in (airportNums | filter: $select.search) track by item.id">
+                <span ng-bind="item.name"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-12 col-xs-12 col-md-2 control-label text-left">出差事由</label>
+          <div class="col-sm-12 col-xs-12 col-md-10">
+            <textarea class="form-control" rows="2" placeholder="请输入出差事由" ng-model="gwDescription" required ></textarea>
+          </div>
+        </div>
+        <footer style="background-color: #fff;">
+          <button type="submit" class="btn btn-info col-xs-12 col-sm-12" ng-disabled='formInfo.$invalid' onclick="submitAction()">确定</button>
+        </footer>
+      </div>
+
+  </form>
+  <div style="height: 30px" class="col-sm-12 col-xs-12 col-md-12 bg-white"></div>
+</div>
+
+
+
+
+
+<!--<table class="table">-->
+  <!--<thead>-->
+  <!--<tr>-->
+    <!--<th data-breakpoints="xs">ID</th>-->
+    <!--<th>First Name</th>-->
+    <!--<th>Last Name</th>-->
+    <!--<th data-breakpoints="xs">Job Title</th>-->
+    <!--<th data-breakpoints="xs sm">Started On</th>-->
+    <!--<th data-breakpoints="xs sm md" data-title="DOB">Date of Birth</th>-->
+  <!--</tr>-->
+  <!--</thead>-->
+  <!--<tbody>-->
+
+  <!--<tr data-expanded="false" ng-repeat="row in businessTripss">-->
+    <!--<td>{{row.name}}</td>-->
+    <!--<td>{{row.name}}</td>-->
+    <!--<td>{{row.title}}</td>-->
+    <!--<td>{{row.title}}</td>-->
+    <!--<td>{{row.to}}</td>-->
+    <!--&lt;!&ndash;<td>{{row.date | date}}</td>&ndash;&gt;-->
+    <!--<td>-->
+      <!--<div class="checkbox">-->
+        <!--<label class="i-checks">-->
+          <!--<input type="checkbox" ng-click="businessTripWipeItemsIsChanged($index)"><i></i>-->
+        <!--</label>-->
+      <!--</div>-->
+    <!--</td>-->
+  <!--</tr>-->
+  <!--</tbody>-->
+<!--</table>-->
+
+
+
+
+
+<script>
+
+  function submitAction() {
+    var appElement = document.querySelector('[ng-controller=businessTripController]');
+    var $scope = angular.element(appElement).scope();
+    $scope.submitTripInfo(function(data,header,config,status){
+      //响应成功
+      if (JSObjectBridge.jsBack){//调用iOS里面的方法
+          JSObjectBridge.jsBack('操作成功');
+      }else{//弹出alert
+          alert('操作成功');
+          window.close();
+      }
+    },function(data,header,config,status){
+      //响应失败
+      alert('操作失败,请稍后重试');
+    });
+
+  }
+  function cancelAction() {
+    JSObjectBridge.jsBack();
+  }
+
+  function JSObjectBridge() {
+    function jsBack(parameter) {}
+  }
+</script>
+
+</body>
+
+
+</html>
