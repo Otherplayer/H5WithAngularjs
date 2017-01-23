@@ -1,43 +1,42 @@
 
-
 // 路径变量
 var path = {
     // 开发环境
     dev: {
-        html: {
-            strip:'src/app/components/business-strip',
-            expense:'src/app/components/business-expense',
-            document:'src/app/components/business-document',
-            deal:'src/app/components/business-deal'
+        com: {
+            strip:'business-trip',
+            expense:'business-expense',
+            document:'business-document',
+            deal:'document-deal',
+            meeting:'meeting',
+            binding:'binding',
+            postal:'postal',
+            rate:'exchange',
+            news:'news',
+            fun:'functionlist',
+            gt:'gt',
+            gm:'gm',
+            wea:'weather',
+            info:'personalinformation',
+            opinion:'publicopinion',
+            opinionhot:'publicopinionhot',
+            opinionstatis:'publicopinionstatistics',
+            opinionset:'publicopinionset',
+            opinionnews:'publicopinionnews',
+            groupinfo:'groupinfo',
+            groupdetail:'groupdetail',
+            groupcom:'groupcom',
+            groupcominfo:'groupcominfo'
         },
-        js: {
-            strip:'src/app/components/business-strip',
-            expense:'src/app/components/business-expense',
-            document:'src/app/components/business-document',
-            deal:'src/app/components/business-deal'
-        },
-        common: 'src/app/components/common',
+        common: 'src/app/common',
         sass: './dev/sass',
         css: './dev/css',
-        image: './dev/images'
+        image: 'src/app/images'
     },
-    // 发布环境
     dist: {
-        html: {
-            strip:'dist/components/business-strip',
-            expense:'dist/components/business-expense',
-            document:'dist/components/business-document',
-            deal:'dist/components/business-deal'
-        },
-        js: {
-            strip:'dist/components/business-strip',
-            expense:'dist/components/business-expense',
-            document:'dist/components/business-document',
-            deal:'dist/components/business-deal'
-        },
         css: './dist/css',
-        common: 'dist/components/common',
-        image: './dist/images'
+        common: 'dist/app/common',
+        image: 'dist/app/images'
     }
 };
 
@@ -49,7 +48,7 @@ var gulp = require('gulp'), //本地安装gulp所用到的地方
     htmlmin = require('gulp-htmlmin'),
     autoprefixer = require('gulp-autoprefixer'),
     processhtml = require('gulp-processhtml'),     /*You might need to change some attributes in your html, when you're releasing for a different environment.
-    Using this plugin, you can*/
+     Using this plugin, you can*/
     // compass = require('gulp-compass'),          // compass编译Sass, 生成雪碧图
     // sass = require('gulp-sass'),                // sass编译
     // sourcemaps = require('gulp-sourcemaps'),    // sass地图
@@ -66,11 +65,11 @@ var gulp = require('gulp'), //本地安装gulp所用到的地方
 
 
 /**
- * Build util CSS and JS
+ * Build util GIF CSS and JS
  */
 
 gulp.task('build:css', function () {
-    gulp.src('src/app/components/common/*.css')
+    gulp.src(path.dev.common + '/*.css')
         .pipe(autoprefixer({
             browsers: ['last 2 versions', 'Android >= 4.0'],
             cascade: true, //是否美化属性值 默认：true 像这样：
@@ -79,15 +78,21 @@ gulp.task('build:css', function () {
             remove:true //是否去掉不必要的前缀 默认：true
         }))
         .pipe(cssmin())
-        .pipe(gulp.dest('dist/components/common'));
+        .pipe(gulp.dest(path.dist.common));
 });
 
 gulp.task('build:js', function () {
-    gulp.src('src/app/components/common/*.js')
+    gulp.src(path.dev.common +  '/*.js')
+    // .pipe(uglify({compress: false}))
         .pipe(concat('app.js'))//合并后的文件名
-        .pipe(uglify({compress: true}))
-        .pipe(gulp.dest('dist/components/common'));
+        .pipe(gulp.dest(path.dist.common));
 });
+
+gulp.task('copy:gif', function () {
+    gulp.src(path.dev.image +  '/*.*')
+        .pipe(gulp.dest(path.dist.image));
+});
+
 
 
 /**
@@ -105,66 +110,27 @@ var htmlminOptions = {
     minifyCSS: true//压缩页面CSS
 };
 var jsminOptions = {
-    mangle: true,//类型：Boolean 默认：true 是否修改变量名
-    mangle: {except: ['require' ,'exports' ,'module' ,'$','JSObjectBridge','jsBack','jsOpenNewpage']},//排除混淆关键字
+    mangle: false,//类型：Boolean 默认：true 是否修改变量名
+    // mangle: {except: ['require' ,'exports' ,'module' ,'$','JSObjectBridge','jsBack','jsOpenNewpage']},//排除混淆关键字
     compress: true,//类型：Boolean 默认：true 是否完全压缩
-    preserveComments: 'license' //保留所有注释all
+    preserveComments: 'all' //保留所有注释all
 };
+var environmentOpts = { /* plugin options */ };
 
-
-/**
- * 出差申请
- */
-gulp.task('htmlmin:strip', function () {
-    gulp.src(path.dev.html.strip + '/*.html')
-        .pipe(htmlmin(htmlminOptions))
-        .pipe(gulp.dest(path.dist.html.strip));
+gulp.task('js-html-min', function () {
+    for (var key in path.dev.com){
+        var target = path.dev.com[key];
+        //html
+        gulp.src('src/app/components/' + target + '/*.html')
+            .pipe(processhtml(environmentOpts))
+            .pipe(htmlmin(htmlminOptions))
+            .pipe(gulp.dest('dist/app/components/' + target));
+        //js
+        gulp.src('src/app/components/' + target + '/*.js')
+            .pipe(uglify(jsminOptions))
+            .pipe(gulp.dest('dist/app/components/' + target));
+    }
 });
-gulp.task('jsmin:strip', function () {
-    gulp.src(path.dev.js.strip + '/*js')
-        .pipe(uglify(jsminOptions))
-        .pipe(gulp.dest(path.dist.js.strip));
-});
-/**
- * 差旅报销
- */
-gulp.task('htmlmin:expense', function () {
-    gulp.src(path.dev.html.expense + '/*.html')
-        .pipe(htmlmin(htmlminOptions))
-        .pipe(gulp.dest(path.dist.html.expense));
-});
-gulp.task('jsmin:expense', function () {
-    gulp.src(path.dev.js.expense + '/*.js')
-        .pipe(uglify(jsminOptions))
-        .pipe(gulp.dest(path.dist.js.expense));
-});
-/**
- * 公文待签批列表
- */
-gulp.task('htmlmin:document', function () {
-    gulp.src(path.dev.html.document + '/*.html')
-        .pipe(htmlmin(htmlminOptions))
-        .pipe(gulp.dest(path.dist.html.document));
-});
-gulp.task('jsmin:document', function () {
-    gulp.src(path.dev.js.document + '/*.js')
-        .pipe(uglify(jsminOptions))
-        .pipe(gulp.dest(path.dist.js.document));
-});
-/**
- * 公文待签批详情
- */
-gulp.task('htmlmin:deal', function () {
-    gulp.src(path.dev.html.deal + '/*.html')
-        .pipe(htmlmin(htmlminOptions))
-        .pipe(gulp.dest(path.dist.html.deal));
-});
-gulp.task('jsmin:deal', function () {
-    gulp.src(path.dev.js.deal + '/*.js')
-        .pipe(uglify(jsminOptions))
-        .pipe(gulp.dest(path.dist.js.deal));
-});
-
 
 
 /**
@@ -181,7 +147,7 @@ gulp.task('build:clean', function() {
  * Create a distribution package
  */
 
-gulp.task('build', ['build:css', 'build:js', 'htmlmin:strip', 'jsmin:strip', 'htmlmin:expense', 'jsmin:expense', 'htmlmin:document', 'jsmin:document', 'htmlmin:deal', 'jsmin:deal'], function () {
+gulp.task('build', ['build:css', 'build:js', 'copy:gif', 'js-html-min'], function () {
     console.log('build done');
 });
 
